@@ -1,3 +1,5 @@
+// Trabalho desenvolvido pelos alunos Felipe Matsuo, Guilherme Bisse, Gustavo Abelio e Pedro Ito
+
 #include "vacuum.h"
 #include <stdio.h>
 
