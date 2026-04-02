@@ -1,0 +1,1 @@
+double* geneticAlgorithm(double (*func)(double), int population_size, double x_0, int tmax);
