@@ -1,3 +1,5 @@
+// Trabalho desenvolvido pelos alunos Felipe Matsuo, Guilherme Bisse, Gustavo Abelio e Pedro Ito
+
 #include "shill.h"
 #include <math.h>
 #include <stdlib.h>

@@ -1,3 +1,5 @@
+// Trabalho desenvolvido pelos alunos Felipe Matsuo, Guilherme Bisse, Gustavo Abelio e Pedro Ito
+
 #include <stdio.h>
 
 #define PI 3.141592684
