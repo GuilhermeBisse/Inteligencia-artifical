@@ -1,33 +1,24 @@
-/* Busca Local por Feixes
- *
- * Objetivo: maximizar f(x) = -(x^2) + 10*sin(x) + 50
- * no intervalo [-10, 10]
- *
- * O algoritmo mantém k estados simultaneamente.
- * A cada iteração, gera vizinhos de todos os estados do feixe,
- * avalia todos eles e seleciona os k melhores para a próxima iteração.
- */
+// Trabalho desenvolvido pelos alunos Felipe Matsuo, Guilherme Bisse, Gustavo Abelio e Pedro Ito
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
 
-#define K 5           // tamanho do feixe
+#define K 5
 #define MAX_ITER 200
-#define N_VIZ 10      // vizinhos por estado
+#define N_VIZ 10
 #define PASSO 0.3
 
-
-// Função objetivo a ser maximizada
+// Função f(x) que cria o terreno. O algoritmo vai ser responsável por descobir o valor de x que atinge o máximo global (onde f(x) é maior)
 double f(double x) {
-    return -(x*x) + 10*sin(x) + 50;
+    return -(x * x) + 10 * sin(x) + 50;
 }
 
-
-//Gera um double aleatório
+// Essa função gera valores aleatórios em ponto flutuante dentro de um intervalo especificado pelos parâmetros min e max, servindo para posicionar os exploradores.
 double rand_range(double min, double max) {
-    return min + (max - min) * ((double)rand() / RAND_MAX);
+    double r = (double)rand() / (double)RAND_MAX;
+    return min + r * (max - min);
 }
 
 typedef struct {
@@ -35,56 +26,65 @@ typedef struct {
     double fx;
 } Estado;
 
-// comparador pra qsort (decrescente)
 int cmp(const void *a, const void *b) {
-    Estado *ea = (Estado *)a;
-    Estado *eb = (Estado *)b;
-    if (eb->fx > ea->fx) return 1;
-    if (eb->fx < ea->fx) return -1;
-    return 0;
+    Estado *e1 = (Estado *)a;
+    Estado *e2 = (Estado *)b;
+    
+    if (e1->fx < e2->fx) {
+        return 1;
+    } else if (e1->fx > e2->fx) {
+        return -1;
+    } else {
+        return 0;
+    }
 }
 
-int main() {
-    srand(time(NULL));
+// Esse é o código de implementação do algoritmo de busca local por feixes.
+// Basicamente, o vetor feixe[K] armazena cada um dos exploradores (no nosso caso, 5 exploradores) que são inicializados em posições aleatórias do terreno.
+// Já o vetor candidatos[total_vizinhos] armazena todas os pontos que os exploradores. (No nosso caso, 5 exploradores com N_VIZ=10.
+// Ou seja, cada explorador dá 10 passos em volta de si mesmo (por isso total_vizinhos = 50).
+// No loop do algoritmo, cada explorador dá seus 10 passos, que são armazenados no vetor candidatos.
+// Quando todos terminaram, esse vetor candidatos é ordenado usando o qsort(), e os 5 primeiros valores (os 5 melhores), são armazenados no vetor feixe.
+// Esse processo iterativo se repete 200 vezes (MAX_ITER = 200)
+// Esse código implementou o local_beam_search considerando o escopo do domínio contínuo, com valores em ponto flutuante (double), além de uso da função
+// rand_range() para gerar valores aleatórios não discretos (somente inteiros).
 
+Estado local_beam_search() {
     Estado feixe[K];
-    Estado candidatos[K * N_VIZ];
+    int total_vizinhos = K * N_VIZ;
+    Estado candidatos[total_vizinhos];
 
-    // inicializa o feixe com estados aleatorios
     for (int i = 0; i < K; i++) {
-        feixe[i].x = rand_range(-10, 10);
+        feixe[i].x = rand_range(-10.0, 10.0);
         feixe[i].fx = f(feixe[i].x);
     }
 
-    printf("feixe inicial:\n");
-    for (int i = 0; i < K; i++)
-        printf("x=%.4f f(x)=%.4f\n", feixe[i].x, feixe[i].fx);
-    printf("\n");
-
-    for (int iter = 0; iter < MAX_ITER; iter++) {
-        // gera vizinhos de cada estado
-        int idx = 0;
+    for (int iteracao = 0; iteracao < MAX_ITER; iteracao++) {
+        int cont = 0;
+        
         for (int i = 0; i < K; i++) {
             for (int j = 0; j < N_VIZ; j++) {
-                double nx = feixe[i].x + rand_range(-PASSO, PASSO);
-                // clamp
-                if (nx < -10) nx = -10;
-                if (nx >  10) nx = 10;
-                candidatos[idx].x = nx;
-                candidatos[idx].fx = f(nx);
-                idx++;
+                double novo_x = feixe[i].x + rand_range(-PASSO, PASSO);
+                
+                if (novo_x < -10.0) {
+                    novo_x = -10.0;
+                }
+                if (novo_x > 10.0) {
+                    novo_x = 10.0;
+                }
+                
+                candidatos[cont].x = novo_x;
+                candidatos[cont].fx = f(novo_x);
+                cont++;
             }
         }
 
-        // pega os K melhores
-        qsort(candidatos, K * N_VIZ, sizeof(Estado), cmp);
-        for (int i = 0; i < K; i++)
+        qsort(candidatos, total_vizinhos, sizeof(Estado), cmp);
+        
+        for (int i = 0; i < K; i++) {
             feixe[i] = candidatos[i];
+        }
     }
 
-    printf("melhor resultado encontrado:\n");
-    printf("  x = %.6f\n", feixe[0].x);
-    printf("  f(x) = %.6f\n", feixe[0].fx);
-
-    return 0;
+    return feixe[0];
 }
