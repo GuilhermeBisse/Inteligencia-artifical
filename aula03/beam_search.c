@@ -26,6 +26,11 @@ typedef struct {
     double fx;
 } Estado;
 
+// Usamos essa função cmp para "ditar" como a função qsort() deve pensar.
+// Como queremos ordenar dos melhores para os piores, usamos esses conjuntos de if, else if e else para criar a lógica da ordenação.
+// Se o primeiro elemento tiver um f(x) maior que o segundo, retorna -1 (ordena primeiro o primeiro elemento).
+// Se o primeiro elemento tiver um f(x) menor que o segundo, retorna 1 (ordena primeiro o segundo elemento).
+// Em caso de igualdade, tanto faz (retorna 0).
 int cmp(const void *a, const void *b) {
     Estado *e1 = (Estado *)a;
     Estado *e2 = (Estado *)b;
