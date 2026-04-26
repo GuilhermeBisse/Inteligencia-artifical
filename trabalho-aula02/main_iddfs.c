@@ -2,25 +2,17 @@
  * main_iddfs.c
  *
  * 8-Puzzle — Busca em Profundidade com Aprofundamento Iterativo (IDDFS)
- * ======================================================================
- * Baseado nos slides: "Busca classica e heuristica" (UNESP, 2025)
- * e nos codigos fornecidos na Aula 2.
  *
  * Realiza 10 experimentos com configuracoes iniciais aleatorias e
- * soluveis, reportando para cada um:
+ * soluveis, mostrando em cada um:
  *   - Estado inicial
  *   - Numero de passos da solucao
  *   - Profundidade em que foi encontrada
  *   - Total de nos expandidos
  *   - Tempo de execucao
  *
- * Ao final, exibe media e desvio padrao de cada metrica.
+ * No final, exibe media e desvio padrao de cada solucao.
  *
- * Compilacao (Linux/Mac):
- *   gcc -O2 -o main_iddfs main_iddfs.c game.c tree.c iddfs.c -lm
- *
- * Compilacao (Windows/MinGW):
- *   gcc -O2 -o main_iddfs main_iddfs.c game.c tree.c iddfs.c -lm
  */
 
 #include <stdio.h>
@@ -36,9 +28,6 @@
 #define N_EXPERIMENTS 10
 #define MAX_DEPTH     31
 
-/* ------------------------------------------------------------------ */
-/* Timer portatil (funciona em Linux, Mac e Windows/MinGW)            */
-/* ------------------------------------------------------------------ */
 
 #ifdef _WIN32
 #  include <windows.h>
@@ -57,13 +46,11 @@ static double get_time_s(void) {
 }
 #endif
 
-/* ------------------------------------------------------------------ */
-/* Utilitarios: configuracao inicial soluvel                           */
-/* ------------------------------------------------------------------ */
+/* Utilitarios: configuracao inicial soluvel */
 
 /*
  * Conta o numero de inversoes no vetor flat (excluindo o zero).
- * Uma configuracao do 8-puzzle e soluvel sse o nr de inversoes e par.
+ * Uma configuracao do 8-puzzle e soluvel sse o nr de inversoes e par
  */
 static int count_inversions(int flat[9]) {
     int inv = 0;
@@ -78,8 +65,7 @@ static int count_inversions(int flat[9]) {
 }
 
 /*
- * Gera uma configuracao inicial aleatoria e soluvel (diferente da meta).
- * Usa rand() padrao, compativel com MinGW.
+ * Gera uma configuracao inicial aleatoria e soluvel (diferente da meta)
  */
 static void generate_solvable(game* G) {
     int flat[9];
@@ -101,9 +87,8 @@ static void generate_solvable(game* G) {
             G->grid[i][j] = flat[i * 3 + j];
 }
 
-/* ------------------------------------------------------------------ */
-/* Utilitarios: impressao                                              */
-/* ------------------------------------------------------------------ */
+
+/* Utilitarios: impressao */
 
 static void print_separator(void) {
     printf("  ");
@@ -128,9 +113,8 @@ static int solution_length(node nd) {
     return steps;
 }
 
-/* ------------------------------------------------------------------ */
-/* main                                                                */
-/* ------------------------------------------------------------------ */
+/* main */
+
 
 int main(void) {
     print_header();
@@ -193,7 +177,7 @@ int main(void) {
                 aux = prev;
             }
         } else {
-            printf("  Solucao NAO encontrada em %d niveis.\n", MAX_DEPTH);
+            printf("  Solucao nao encontrada em %d niveis.\n", MAX_DEPTH);
             printf("  Nos expand.: %ld\n",  g_total_nodes);
             printf("  Tempo      : %.4fs\n", elapsed);
 
