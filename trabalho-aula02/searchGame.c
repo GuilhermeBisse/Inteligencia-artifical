@@ -10,7 +10,7 @@
 #include "astar.h"
 #include <time.h>
 #include <math.h>
-
+#include "iddfs.h"
 // É aqui no searchGame.c que realizamos os experimentos para comparar os algoritmos A* e IDA* utilizando as heurísticas Manhattan e Fora do Lugar. Para isso, definimos um ponteiro para função heuristica, que é utilizado tanto no A* quanto no IDA* para calcular o valor da heurística em cada nó. No início de cada experimento, inicializamos o jogo com uma configuração aleatória, e depois executamos o A* e o IDA* utilizando cada uma das heurísticas, medindo o tempo gasto e o número de passos para encontrar a solução. Os resultados são armazenados em um arquivo CSV para posterior análise.
 
 // Função para realizar os experimentos, comparando os algoritmos A* e IDA* utilizando as heurísticas Manhattan e Fora do Lugar. Os resultados são armazenados em um arquivo CSV para posterior análise.
@@ -96,7 +96,19 @@ void realizarExperimentos() {
             fprintf(arq, "%d;IDA*;ForaLugar;%.6f;%d\n", i, tempo, solucao_IDA2->pathCost);
         else
             fprintf(arq, "%d;IDA*;ForaLugar;%.6f;FALHOU\n", i, tempo);
+        
+        // IDDFS
+        copyGame(G, copia);
+        start = clock();
+        node solucao_IDDFS = IDDFSSearch(copia);
+        end = clock();
+        tempo = (double)(end - start) / CLOCKS_PER_SEC;
+        if (solucao_IDDFS != NULL)
+            fprintf(arq, "%d;IDDFS;Nenhuma;%.6f;%d\n", i, tempo, solucao_IDDFS->pathCost);
+        else
+            fprintf(arq, "%d;IDDFS;Nenhuma;%.6f;FALHOU\n", i, tempo);
     }
+    
 
     fclose(arq);
     delGame(G);
