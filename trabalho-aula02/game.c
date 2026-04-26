@@ -45,6 +45,7 @@ void delGame(game* G){
     free(G->grid[1]);
     free(G->grid[2]);
     free(G->grid);
+    free(G);
 }
 
 void initGame(game* G){
@@ -134,4 +135,3 @@ bool equal(game* A, game* B){
         }
     return true;
 }
-

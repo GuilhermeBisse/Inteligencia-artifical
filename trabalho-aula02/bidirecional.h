@@ -1,4 +1,3 @@
-// Trabalho desenvolvido pelos alunos Felipe Matsuo, Guilherme Bisse, Gustavo Abelio e Pedro Ito
 #ifndef BIDIRECTIONAL_H
 #define BIDIRECTIONAL_H
 
@@ -6,15 +5,11 @@
 #include "tree.h"
 #include "bfstree.h"
 
-/* * Executa a busca bidirecional entre o estado inicial G e o objetivo.
- * Retorna o nó de encontro que liga as duas pontas da busca.
- */
-node bidirectionalSearch(game* G, game* objetivo);
+// Executa a busca a partir do início e do objetivo.
+// Retorna o nó onde houve encontro (lado do início).
+node bidirectionalSearch(game* start, game* goal);
 
-/*
- * Função auxiliar para reconstruir e imprimir o caminho completo 
- * unindo as duas árvores (a que partiu do início e a que partiu do fim).
- */
+// Imprime o caminho completo a partir dos dois lados.
 void printBidirectionalPath(node meetIn, node meetOut);
 
 #endif
