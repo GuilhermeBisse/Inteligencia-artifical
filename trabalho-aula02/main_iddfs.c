@@ -1,5 +1,4 @@
-/*
- * main_iddfs.c
+/*Trabalho desenvolvido pelos alunos Felipe Matsuo, Guilherme Bisse, Gustavo Abelio e Pedro Ito
  *
  * 8-Puzzle — Busca em Profundidade com Aprofundamento Iterativo (IDDFS)
  *
