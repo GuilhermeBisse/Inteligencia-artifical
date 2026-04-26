@@ -1,5 +1,4 @@
-/*
- * main_iddfs.c
+/*Trabalho desenvolvido pelos alunos Felipe Matsuo, Guilherme Bisse, Gustavo Abelio e Pedro Ito
  *
  * 8-Puzzle — Busca em Profundidade com Aprofundamento Iterativo (IDDFS)
  *
@@ -189,67 +188,5 @@ int main(void) {
 
         delGame(G);
     }
-
-    /* ---- Tabela resumo ---- */
-    printf("\n");
-    for (int i = 0; i < 62; i++) putchar('=');
-    printf("\n  TABELA RESUMO\n");
-    for (int i = 0; i < 62; i++) putchar('=');
-    printf("\n");
-    printf("  %3s  %7s  %5s  %12s  %10s\n",
-           "Exp", "Passos", "Prof", "Nos expand.", "Tempo (s)");
-    print_separator();
-    for (int i = 0; i < N_EXPERIMENTS; i++) {
-        if (steps_arr[i] >= 0)
-            printf("  %3d  %7d  %5d  %12ld  %10.4f\n",
-                   i+1, steps_arr[i], depth_arr[i],
-                   nodes_arr[i], time_arr[i]);
-        else
-            printf("  %3d  %7s  %5d  %12ld  %10.4f  [FALHOU]\n",
-                   i+1, "N/A", depth_arr[i],
-                   nodes_arr[i], time_arr[i]);
-    }
-    print_separator();
-
-    /* ---- Estatisticas ---- */
-    if (solved > 0) {
-        double sum_s = 0, sum_t = 0, sum_n = 0;
-        for (int i = 0; i < N_EXPERIMENTS; i++) {
-            if (steps_arr[i] >= 0) {
-                sum_s += steps_arr[i];
-                sum_t += time_arr[i];
-                sum_n += (double)nodes_arr[i];
-            }
-        }
-        double mean_s = sum_s / solved;
-        double mean_t = sum_t / solved;
-        double mean_n = sum_n / solved;
-
-        double var_s = 0, var_t = 0, var_n = 0;
-        for (int i = 0; i < N_EXPERIMENTS; i++) {
-            if (steps_arr[i] >= 0) {
-                var_s += (steps_arr[i] - mean_s) * (steps_arr[i] - mean_s);
-                var_t += (time_arr[i]  - mean_t) * (time_arr[i]  - mean_t);
-                var_n += ((double)nodes_arr[i] - mean_n) * ((double)nodes_arr[i] - mean_n);
-            }
-        }
-        double std_s = sqrt(var_s / solved);
-        double std_t = sqrt(var_t / solved);
-        double std_n = sqrt(var_n / solved);
-
-        printf("\n  Resolvidos : %d / %d\n", solved, N_EXPERIMENTS);
-        printf("  Passos     : media = %.1f  |  desvio padrao = %.1f\n",
-               mean_s, std_s);
-        printf("  Nos expand.: media = %.0f  |  desvio padrao = %.0f\n",
-               mean_n, std_n);
-        printf("  Tempo      : media = %.4fs  |  desvio padrao = %.4fs\n",
-               mean_t, std_t);
-    } else {
-        printf("\n  Nenhum experimento foi resolvido.\n");
-    }
-
-    for (int i = 0; i < 62; i++) putchar('=');
-    printf("\n");
-
     return 0;
 }

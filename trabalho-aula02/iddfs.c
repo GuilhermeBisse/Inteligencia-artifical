@@ -1,3 +1,5 @@
+// Trabalho desenvolvido pelos alunos Felipe Matsuo, Guilherme Bisse, Gustavo Abelio e Pedro Ito
+
 #include "iddfs.h"
 #include <stdlib.h>
 #include <assert.h>
@@ -8,7 +10,7 @@
 long g_nodes_expanded = 0;
 long g_total_nodes = 0;
 
-/* Pilha simples (para uso futuro / versão iterativa) */
+/* Pilha simples */
 
 Stack* newStack(void) {
     Stack* s = malloc(sizeof(Stack));
@@ -42,7 +44,7 @@ void freeStack(Stack* s) {
     free(s);
 }
 
-/* Conjunto de estados no caminho atual (para evitar ciclos) */
+/* Conjunto de estados no caminho atual (evita ciclos)*/
 
 PathSet* newPathSet(void) {
     PathSet* ps = malloc(sizeof(PathSet));
@@ -54,11 +56,10 @@ PathSet* newPathSet(void) {
 void pushPath(PathSet* ps, game* state) {
     PathItem* it = malloc(sizeof(PathItem));
     assert(it);
-    /* Guarda uma cópia do estado */
     it->state = newGame();
     copyGame(state, it->state);
     it->next = ps->top;
-    ps->top  = it;
+    ps->top = it;
 }
 
 void popPath(PathSet* ps) {
@@ -84,24 +85,13 @@ void freePathSet(PathSet* ps) {
 
 /* DLS — Busca em profundidade com limite */
 
-/*
- * DLS(nd, depth, ps)
+/*DLS(nd, depth, ps)
  *
  * nd : nó atual
  * depth : profundidade restante permitida
  * ps : conjunto de estados no caminho atual (evita ciclos)
  *
  * Retorna o nó solução ou NULL.
- *
- * A cada chamada:
- *   1. Conta o nó expandido.
- *   2. Verifica se é a meta.
- *   3. Se depth == 0, retorna NULL (corte).
- *   4. Para cada ação k (mover peça k para posição do zero):
- *    - Cria nó filho.
- *    - Se estado não está no caminho atual, chama DLS recursivamente.
- *    - Se encontrar, retorna.
- *    - Caso contrário, libera filho.
  */
 node DLS(node nd, int depth, PathSet* ps) {
     g_nodes_expanded++;
@@ -116,7 +106,7 @@ node DLS(node nd, int depth, PathSet* ps) {
         return NULL;
     }
 
-    /* Variável auxiliar para restaurar estado após cada movimento */
+    /* Estado auxiliar para testar movimentos sem alterar nd->state */
     game* aux = newGame();
     copyGame(nd->state, aux);
 
@@ -125,21 +115,13 @@ node DLS(node nd, int depth, PathSet* ps) {
     /* Tenta cada ação possível: mover peça k (k = 1..8) */
     for (int k = 1; k < 9 && result == NULL; k++) {
         if (moveGame(aux, k)) {
-            /* Verifica se estado já está no caminho (evita ciclos) */
             if (!inPath(ps, aux)) {
-                /* Cria nó filho */
                 node child = childNode(nd, k);
 
-                /* Adiciona ao caminho atual */
                 pushPath(ps, child->state);
-
-                /* Recursão */
                 result = DLS(child, depth - 1, ps);
-
-                /* Remove do caminho */
                 popPath(ps);
 
-                /* Se não encontrou solução por este ramo, libera filho */
                 if (result == NULL) {
                     delNode(child);
                 }
@@ -148,13 +130,11 @@ node DLS(node nd, int depth, PathSet* ps) {
             moveGame(aux, k);
         }
     }
-
     delGame(aux);
     return result;
 }
 
 /* IDDFS — Aprofundamento iterativo */
-
 
 /*
  * IDDFS(G, maxDepth)
@@ -166,6 +146,7 @@ node DLS(node nd, int depth, PathSet* ps) {
  *   Se encontrar solução, retorna o nó.
  *
  * Retorna NULL se não encontrar dentro de maxDepth.
+ * Acumula a contagem total de nós em g_total_nodes.
  */
 node IDDFS(game* G, int maxDepth) {
     g_total_nodes = 0;
@@ -173,27 +154,27 @@ node IDDFS(game* G, int maxDepth) {
     for (int depth = 0; depth <= maxDepth; depth++) {
         g_nodes_expanded = 0;
 
-        /* Cria nó raiz */
         node root = childNode(NULL, 0);
         copyGame(G, root->state);
 
-        /* Inicializa conjunto de estados no caminho */
         PathSet* ps = newPathSet();
         pushPath(ps, root->state);
 
-        /* Executa DLS com limite 'depth' */
         node result = DLS(root, depth, ps);
 
         freePathSet(ps);
         g_total_nodes += g_nodes_expanded;
 
         if (result != NULL) {
-            /* root já é ancestral de result; não liberar aqui */
             return result;
         }
-
-        /* Não encontrou: libera nó raiz e tenta profundidade maior */
         delNode(root);
     }
     return NULL;
+}
+
+node IDDFSSearch(game* G) {
+    g_nodes_expanded = 0;
+    g_total_nodes    = 0;
+    return IDDFS(G, MAX_DEPTH_IDDFS);
 }

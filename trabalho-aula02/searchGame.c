@@ -139,10 +139,8 @@ void realizarExperimentos() {
             fprintf(arq, "%d;IDS;SemHeuristica;%.6f;%d\n", i, tempo, solucao_IDS->pathCost);
         else
             fprintf(arq, "%d;IDS;SemHeuristica;%.6f;FALHOU\n", i, tempo);
-            
-
-
     }
+    
 
     fclose(arq);
     delGame(G);
