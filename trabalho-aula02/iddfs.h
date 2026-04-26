@@ -11,19 +11,19 @@
 // Cada item guarda um nó da árvore de busca e um ponteiro para o próximo item
 
 typedef struct StackItem {
-    node              nd;
+    node nd;
     struct StackItem* next;
 } StackItem;
 
 typedef struct {
     StackItem* top;
-    int        size;
+    int size;
 } Stack;
 
 Stack* newStack(void);
-void   pushStack(Stack* s, node nd);
-node   popStack(Stack* s);
-void   freeStack(Stack* s);
+void pushStack(Stack* s, node nd);
+node popStack(Stack* s);
+void freeStack(Stack* s);
 
 // Estrutura para rastrear os estados presentes no caminho atual da busca
 // Eh usada pelo DLS para evitar ciclos
