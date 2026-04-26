@@ -3,21 +3,17 @@
 #include <assert.h>
 #include <stdio.h>
 
-/* ------------------------------------------------------------------ */
-/* Contadores globais                                                   */
-/* ------------------------------------------------------------------ */
+/* Contadores globais */
 
 long g_nodes_expanded = 0;
-long g_total_nodes    = 0;
+long g_total_nodes = 0;
 
-/* ------------------------------------------------------------------ */
-/* Pilha simples (para uso futuro / versão iterativa)                  */
-/* ------------------------------------------------------------------ */
+/* Pilha simples (para uso futuro / versão iterativa) */
 
 Stack* newStack(void) {
     Stack* s = malloc(sizeof(Stack));
     assert(s);
-    s->top  = NULL;
+    s->top = NULL;
     s->size = 0;
     return s;
 }
@@ -25,9 +21,9 @@ Stack* newStack(void) {
 void pushStack(Stack* s, node nd) {
     StackItem* it = malloc(sizeof(StackItem));
     assert(it);
-    it->nd   = nd;
+    it->nd = nd;
     it->next = s->top;
-    s->top   = it;
+    s->top = it;
     s->size++;
 }
 
@@ -35,7 +31,7 @@ node popStack(Stack* s) {
     if (!s->top) return NULL;
     StackItem* it = s->top;
     node nd = it->nd;
-    s->top  = it->next;
+    s->top = it->next;
     s->size--;
     free(it);
     return nd;
@@ -46,9 +42,7 @@ void freeStack(Stack* s) {
     free(s);
 }
 
-/* ------------------------------------------------------------------ */
-/* Conjunto de estados no caminho atual (para evitar ciclos)           */
-/* ------------------------------------------------------------------ */
+/* Conjunto de estados no caminho atual (para evitar ciclos) */
 
 PathSet* newPathSet(void) {
     PathSet* ps = malloc(sizeof(PathSet));
@@ -88,16 +82,14 @@ void freePathSet(PathSet* ps) {
     free(ps);
 }
 
-/* ------------------------------------------------------------------ */
-/* DLS — Busca em profundidade com limite                              */
-/* ------------------------------------------------------------------ */
+/* DLS — Busca em profundidade com limite */
 
 /*
  * DLS(nd, depth, ps)
  *
- * nd    : nó atual
+ * nd : nó atual
  * depth : profundidade restante permitida
- * ps    : conjunto de estados no caminho atual (evita ciclos)
+ * ps : conjunto de estados no caminho atual (evita ciclos)
  *
  * Retorna o nó solução ou NULL.
  *
@@ -106,10 +98,10 @@ void freePathSet(PathSet* ps) {
  *   2. Verifica se é a meta.
  *   3. Se depth == 0, retorna NULL (corte).
  *   4. Para cada ação k (mover peça k para posição do zero):
- *      - Cria nó filho.
- *      - Se estado não está no caminho atual, chama DLS recursivamente.
- *      - Se encontrar, retorna.
- *      - Caso contrário, libera filho.
+ *    - Cria nó filho.
+ *    - Se estado não está no caminho atual, chama DLS recursivamente.
+ *    - Se encontrar, retorna.
+ *    - Caso contrário, libera filho.
  */
 node DLS(node nd, int depth, PathSet* ps) {
     g_nodes_expanded++;
@@ -161,9 +153,8 @@ node DLS(node nd, int depth, PathSet* ps) {
     return result;
 }
 
-/* ------------------------------------------------------------------ */
-/* IDDFS — Aprofundamento iterativo                                    */
-/* ------------------------------------------------------------------ */
+/* IDDFS — Aprofundamento iterativo */
+
 
 /*
  * IDDFS(G, maxDepth)
@@ -204,6 +195,5 @@ node IDDFS(game* G, int maxDepth) {
         /* Não encontrou: libera nó raiz e tenta profundidade maior */
         delNode(root);
     }
-
     return NULL;
 }
