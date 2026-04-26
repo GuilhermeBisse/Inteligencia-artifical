@@ -1,5 +1,4 @@
 // Trabalho desenvolvido pelos alunos Felipe Matsuo, Guilherme Bisse, Gustavo Abelio e Pedro Ito
-
 // Aqui testamos o IDDFS de forma isolada, com um único estado inicial aleatório e solucionável.
 // O programa gera o tabuleiro, executa a busca e imprime quantos passos foram necessários,
 // em que profundidade a solução foi encontrada, quantos nós foram expandidos e o tempo gasto.
