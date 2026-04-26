@@ -1,16 +1,16 @@
 // Trabalho desenvolvido pelos alunos Felipe Matsuo, Guilherme Bisse, Gustavo Abelio e Pedro Ito
-
 #include "iddfs.h"
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
 
-/* Contadores globais */
-
+// Contadores globais que usamos para medir quantos nós foram expandidos durante a busca.
+// g_nodes_expanded conta os nós da iteração atual, e g_total_nodes acumula o total de todas as iterações.
 long g_nodes_expanded = 0;
-long g_total_nodes = 0;
+long g_total_nodes    = 0;
 
-/* Pilha simples */
+// Implementação de uma pilha simples que usamos internamente no IDDFS.
+// Cada item guarda um nó da árvore e um ponteiro para o próximo item da pilha.
 
 Stack* newStack(void) {
     Stack* s = malloc(sizeof(Stack));
@@ -33,7 +33,7 @@ node popStack(Stack* s) {
     if (!s->top) return NULL;
     StackItem* it = s->top;
     node nd = it->nd;
-    s->top = it->next;
+    s->top  = it->next;
     s->size--;
     free(it);
     return nd;
@@ -44,7 +44,9 @@ void freeStack(Stack* s) {
     free(s);
 }
 
-/* Conjunto de estados no caminho atual (evita ciclos)*/
+// Para evitar ciclos durante a busca, mantemos um conjunto com todos os estados que estão
+// no caminho atual (do nó raiz até o nó sendo explorado). Antes de expandir um filho,
+// verificamos se ele já aparece nesse caminho, evitando repetições e loops infinitos.
 
 PathSet* newPathSet(void) {
     PathSet* ps = malloc(sizeof(PathSet));
@@ -59,7 +61,7 @@ void pushPath(PathSet* ps, game* state) {
     it->state = newGame();
     copyGame(state, it->state);
     it->next = ps->top;
-    ps->top = it;
+    ps->top  = it;
 }
 
 void popPath(PathSet* ps) {
@@ -83,36 +85,27 @@ void freePathSet(PathSet* ps) {
     free(ps);
 }
 
-/* DLS — Busca em profundidade com limite */
-
-/*DLS(nd, depth, ps)
- *
- * nd : nó atual
- * depth : profundidade restante permitida
- * ps : conjunto de estados no caminho atual (evita ciclos)
- *
- * Retorna o nó solução ou NULL.
- */
+// Implementação do DLS (Busca em Profundidade com Limite). Dado um nó e um limite de profundidade,
+// ele explora recursivamente os filhos até encontrar a solução ou esgotar o limite. O argumento ps
+// guarda os estados do caminho atual para evitar ciclos, de forma semelhante ao que fizemos com
+// a fila de explorados no A*. Usamos um estado auxiliar para testar cada movimento sem modificar
+// o estado do nó atual, e desfazemos o movimento ao final de cada tentativa.
 node DLS(node nd, int depth, PathSet* ps) {
     g_nodes_expanded++;
 
-    /* Verificação da meta */
     if (endGame(nd->state)) {
         return nd;
     }
 
-    /* Corte por profundidade */
     if (depth == 0) {
         return NULL;
     }
 
-    /* Estado auxiliar para testar movimentos sem alterar nd->state */
     game* aux = newGame();
     copyGame(nd->state, aux);
 
     node result = NULL;
 
-    /* Tenta cada ação possível: mover peça k (k = 1..8) */
     for (int k = 1; k < 9 && result == NULL; k++) {
         if (moveGame(aux, k)) {
             if (!inPath(ps, aux)) {
@@ -126,28 +119,20 @@ node DLS(node nd, int depth, PathSet* ps) {
                     delNode(child);
                 }
             }
-            /* Restaura estado antes do próximo movimento */
+            // Desfaz o movimento para testar a próxima peça
             moveGame(aux, k);
         }
     }
+
     delGame(aux);
     return result;
 }
 
-/* IDDFS — Aprofundamento iterativo */
-
-/*
- * IDDFS(G, maxDepth)
- *
- * Para d = 0, 1, 2, ..., maxDepth:
- *   Cria nó raiz com estado G.
- *   Inicializa PathSet com estado raiz.
- *   Chama DLS(raiz, d, ps).
- *   Se encontrar solução, retorna o nó.
- *
- * Retorna NULL se não encontrar dentro de maxDepth.
- * Acumula a contagem total de nós em g_total_nodes.
- */
+// Implementação do IDDFS (Busca com Aprofundamento Iterativo). A ideia é executar o DLS repetidamente,
+// aumentando o limite de profundidade a cada iteração (de 0 até maxDepth). Isso garante que a primeira
+// solução encontrada tem o menor número de passos possível, combinando a completude da busca em largura
+// com o baixo uso de memória da busca em profundidade. O custo disso é que os nós dos níveis mais rasos
+// são expandidos múltiplas vezes, mas na prática isso é aceitável.
 node IDDFS(game* G, int maxDepth) {
     g_total_nodes = 0;
 
@@ -168,11 +153,15 @@ node IDDFS(game* G, int maxDepth) {
         if (result != NULL) {
             return result;
         }
+
         delNode(root);
     }
+
     return NULL;
 }
 
+// Função de entrada para uso no searchGame.c, seguindo o mesmo padrão das funções AStarSearch e IDAStarSearch.
+// Reseta os contadores antes de cada chamada e usa MAX_DEPTH_IDDFS como limite de profundidade.
 node IDDFSSearch(game* G) {
     g_nodes_expanded = 0;
     g_total_nodes    = 0;
