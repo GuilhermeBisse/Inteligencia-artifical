@@ -6,14 +6,14 @@
 /* Contadores globais */
 
 long g_nodes_expanded = 0;
-long g_total_nodes    = 0;
+long g_total_nodes = 0;
 
 /* Pilha simples */
 
 Stack* newStack(void) {
     Stack* s = malloc(sizeof(Stack));
     assert(s);
-    s->top  = NULL;
+    s->top = NULL;
     s->size = 0;
     return s;
 }
@@ -21,9 +21,9 @@ Stack* newStack(void) {
 void pushStack(Stack* s, node nd) {
     StackItem* it = malloc(sizeof(StackItem));
     assert(it);
-    it->nd   = nd;
+    it->nd = nd;
     it->next = s->top;
-    s->top   = it;
+    s->top = it;
     s->size++;
 }
 
@@ -31,7 +31,7 @@ node popStack(Stack* s) {
     if (!s->top) return NULL;
     StackItem* it = s->top;
     node nd = it->nd;
-    s->top  = it->next;
+    s->top = it->next;
     s->size--;
     free(it);
     return nd;
@@ -57,7 +57,7 @@ void pushPath(PathSet* ps, game* state) {
     it->state = newGame();
     copyGame(state, it->state);
     it->next = ps->top;
-    ps->top  = it;
+    ps->top = it;
 }
 
 void popPath(PathSet* ps) {
@@ -83,12 +83,11 @@ void freePathSet(PathSet* ps) {
 
 /* DLS — Busca em profundidade com limite */
 
-/*
- * DLS(nd, depth, ps)
+/*DLS(nd, depth, ps)
  *
- * nd    : nó atual
+ * nd : nó atual
  * depth : profundidade restante permitida
- * ps    : conjunto de estados no caminho atual (evita ciclos)
+ * ps : conjunto de estados no caminho atual (evita ciclos)
  *
  * Retorna o nó solução ou NULL.
  */
@@ -129,14 +128,11 @@ node DLS(node nd, int depth, PathSet* ps) {
             moveGame(aux, k);
         }
     }
-
     delGame(aux);
     return result;
 }
 
-
 /* IDDFS — Aprofundamento iterativo */
-
 
 /*
  * IDDFS(G, maxDepth)
@@ -170,10 +166,8 @@ node IDDFS(game* G, int maxDepth) {
         if (result != NULL) {
             return result;
         }
-
         delNode(root);
     }
-
     return NULL;
 }
 
