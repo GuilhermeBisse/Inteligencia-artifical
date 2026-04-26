@@ -1,4 +1,4 @@
-// Trabalho desenvolvido por [Seu Nome] - Implementação de Busca Bidirecional
+// Trabalho desenvolvido pelos alunos Felipe Matsuo, Guilherme Bisse, Gustavo Abelio e Pedro Ito
 #ifndef BIDIRECTIONAL_H
 #define BIDIRECTIONAL_H
 
