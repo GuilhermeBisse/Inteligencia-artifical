@@ -1,3 +1,5 @@
+// Trabalho desenvolvido pelos alunos Felipe Matsuo, Guilherme Bisse, Gustavo Abelio e Pedro Ito
+
 #include "iddfs.h"
 #include <stdlib.h>
 #include <assert.h>
