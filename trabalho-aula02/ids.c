@@ -14,7 +14,7 @@ node IDS(game* G){
     // Começa com profundidade limite 0
     int limit = 0; 
     // Limite máximo de profundidade para evitar execução excessiva
-    int maxLimit = 20; 
+    int maxLimit = 31; 
 
     while (limit <= maxLimit){
 
@@ -22,11 +22,13 @@ node IDS(game* G){
         node result = DFS_Limited(root, limit); 
 
         if (result != NULL){
+            delNode(root);
             return result;
         }
 
         limit++;
     }
     
+    delNode(root);
     return NULL; // Se não encontrar solução dentro do limite máximo
 }

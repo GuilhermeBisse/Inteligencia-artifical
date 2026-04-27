@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <unistd.h>
+#include <time.h>
 //#include <windows.h> função sleep no windows
 
 fila newFila(){
@@ -48,7 +49,8 @@ node pop(fila f){
 }
 
 
-// Implementação que fizemos de uma função adicional para remover um item específico da fila, que utilizamos para remover um nó da fronteira ao ser explorado.
+// Implementação que fizemos de uma função adicional para remover um item específico da fila, 
+// que utilizamos para remover um nó da fronteira ao ser explorado.
 void removerNo(fila f, item alvo) {
     if (f == NULL || f->first == NULL || alvo == NULL) return;
 
@@ -75,7 +77,8 @@ void removerNo(fila f, item alvo) {
     free(atual);
 }
 
-// Modificação na função isIn para verificar se um nó está presente na fila, comparando os estados dos nós utilizando a função equal. Essa função é utilizada para verificar se um nó filho gerado já foi explorado ou está presente na fronteira, evitando assim loops e inserções desnecessárias na fronteira.
+/* Modificação na função isIn para verificar se um nó está presente na fila, comparando os estados dos nós utilizando a função equal. Essa função é utilizada para verificar se um nó filho gerado já foi explorado ou está presente na fronteira, evitando assim loops e inserções desnecessárias na fronteira.
+*/
 bool isIn(fila f, node nd){
 
     for (item aux=f->first; aux!=NULL; aux=aux->next){
@@ -97,57 +100,68 @@ int lenFila(fila f){
 }
 
 node BFS(game* G){
-/*
-    Breadth-First Search (Busca em largura).
-*/
-    //Inicializa primeiro nó com a configuração fornecida do jogo.
+    // Inicializa primeiro nó com a configuração fornecida do jogo.
     node nd = childNode(NULL,0);
-    copyGame(G,nd->state);
+    copyGame(G, nd->state);
+    
     if (endGame(G)){
         return nd;
     }
-    printGame(G); printf("\n");
 
-    //Inicializa fronteira e conjunto de nós já explorados
+    // Inicializa fronteira e conjunto de nós já explorados
     fila frontier = newFila();
-    insert(frontier,nd);
+    insert(frontier, nd);
     fila explored = newFila();
-    insert(explored,nd);
+    insert(explored, nd);
     
-    while(frontier->first!=NULL){
-        //Armazena último nó em frontier
+    // --- IMPLEMENTAÇÃO DA TRAVA DE TEMPO ---
+    time_t start_time = time(NULL); // Guarda o tempo (em segundos) exato do início
+    double time_limit = 240.0;      // Define o limite máximo em segundos (4 minutos)
+
+    while(frontier->first != NULL){
+        time_t current_time = time(NULL);
+
+        if (difftime(current_time, start_time) >= time_limit) {
+            printf("\n[AVISO] O algoritmo BFS excedeu o limite de %.0f segundos. Abortando...\n", time_limit);
+
+            free(frontier);
+            free(explored);
+            
+            return NULL;
+        }
+
         node parent = pop(frontier);
-        //Variável auxiliar
-        game* aux = newGame();
-        copyGame(parent->state,aux);
-        //Cria nós filhos para cada ação possível
-        for (int k=1; k<9; k++){
-            //Checa se movimento é válido
-            if (moveGame(aux,k)){
-                node child = childNode(parent,k);
-                if (!isIn(explored,child)){
-                    //Checa se nó filho resolve o problema
+        
+        for (int k = 1; k < 9; k++){
+            game* aux = newGame();
+            copyGame(parent->state, aux);
+
+            // Checa se movimento é válido
+            if (moveGame(aux, k)){
+                node child = childNode(parent, k);
+
+                copyGame(aux, child->state);
+
+                if (!isIn(explored, child)){
                     if (endGame(child->state)){
+                        delGame(aux);
+                        free(frontier);
+                        free(explored);
                         return child;
                     }
-                    //Caso contrário, insere nó filho em frontier
-                    insert(frontier,child);
-                    //Insere em explored
-                    insert(explored,child);
-                    //Impressão na tela
-                    //sleep(1);
-                    //printGame(child->state); printf("\n");
+                    
+                    insert(frontier, child);
+                    insert(explored, child);
                 }
-                else{ //para poupar memória
+                else{ 
                     delNode(child);
                 }
-                //Retorna para estado anterior ao movimento
-                moveGame(aux,k);
             }
+            delGame(aux);
         }
-        //Gerenciamento adequado de memória. Não é necessário, mas eu fiz
-        delGame(aux);
     }
     
+    free(frontier);
+    free(explored);
     return NULL;
 }

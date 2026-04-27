@@ -1,3 +1,6 @@
+# Trabalho desenvolvido pelos alunos Felipe Matsuo, Guilherme Bisse, Gustavo Abelio e Pedro Ito
+
+# Esse script python é para análise dos resultados obtidos no arquivo "resultados_puzzle.csv" e geração de gráficos.
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np

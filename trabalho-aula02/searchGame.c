@@ -42,7 +42,7 @@ void realizarExperimentos() {
         initGame(G);   // gera um tabuleiro válido aleatório
         printGame(G);
 
-        // ---------- A* (Manhattan) ----------
+        // A* (Manhattan)
         copyGame(G, copia);
         heuristica = hm;
 
@@ -57,7 +57,7 @@ void realizarExperimentos() {
         else
             fprintf(arq, "%d;A*;Manhattan;%.6f;FALHOU\n", i, tempo);
 
-        // ---------- IDA* (Manhattan) ----------
+        //  IDA* (Manhattan) 
         copyGame(G, copia);
         heuristica = hm;
 
@@ -72,7 +72,7 @@ void realizarExperimentos() {
         else
             fprintf(arq, "%d;IDA*;Manhattan;%.6f;FALHOU\n", i, tempo);
 
-        // ---------- A* (Fora do Lugar) ----------
+        //  A* (Fora do Lugar) 
         copyGame(G, copia);
         heuristica = hfora;
 
@@ -87,7 +87,7 @@ void realizarExperimentos() {
         else
             fprintf(arq, "%d;A*;ForaLugar;%.6f;FALHOU\n", i, tempo);
 
-        // ---------- IDA* (Fora do Lugar) ----------
+        //  IDA* (Fora do Lugar) 
         copyGame(G, copia);
         heuristica = hfora;
 
@@ -102,7 +102,7 @@ void realizarExperimentos() {
         else
             fprintf(arq, "%d;IDA*;ForaLugar;%.6f;FALHOU\n", i, tempo);
 
-        // ---------- IDDFS ----------
+        //  IDDFS 
         copyGame(G, copia);
 
         start = clock();
@@ -116,12 +116,12 @@ void realizarExperimentos() {
         else
             fprintf(arq, "%d;IDDFS;Nenhuma;%.6f;FALHOU\n", i, tempo);
 
-        // ---------- DFS limitado ----------
+        //  DFS limitado 
         node root = childNode(NULL, 0);
         copyGame(G, root->state);
 
         start = clock();
-        node solucao_DFS = DFS_Limited(root, 20);
+        node solucao_DFS = DFS_Limited(root, 31);
         end = clock();
 
         tempo = (double)(end - start) / CLOCKS_PER_SEC;
@@ -131,7 +131,9 @@ void realizarExperimentos() {
         else
             fprintf(arq, "%d;DFS;SemHeuristica;%.6f;FALHOU\n", i, tempo);
 
-        // ---------- IDS ----------
+        delNode(root);
+
+        //  IDS 
         copyGame(G, copia);
 
         start = clock();
@@ -145,7 +147,7 @@ void realizarExperimentos() {
         else
             fprintf(arq, "%d;IDS;SemHeuristica;%.6f;FALHOU\n", i, tempo);
 
-        // ---------- Busca Bidirecional ----------
+        //  Busca Bidirecional 
         copyGame(G, copia);
 
         start = clock();
@@ -159,6 +161,20 @@ void realizarExperimentos() {
             fprintf(arq, "%d;Bidirecional;BFS;%.6f;%d\n", i, tempo, solucao_bidir->pathCost);
         else
             fprintf(arq, "%d;Bidirecional;BFS;%.6f;FALHOU\n", i, tempo);
+
+        //  BFS 
+        copyGame(G, copia);
+
+        start = clock();
+        node solucao_BFS = BFS(copia);
+        end = clock();
+
+        tempo = (double)(end - start) / CLOCKS_PER_SEC;
+
+        if (solucao_BFS != NULL)
+            fprintf(arq, "%d;BFS;SemHeuristica;%.6f;%d\n", i, tempo, solucao_BFS->pathCost);
+        else
+            fprintf(arq, "%d;BFS;SemHeuristica;%.6f;FALHOU\n", i, tempo);
     }
 
     fclose(arq);

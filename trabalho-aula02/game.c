@@ -19,7 +19,9 @@ game* newGame(){
     return G;
 }
 
-// Implementamos também a função de verificar a paridade do jogo mencionada no vídeo que o prof. Emílio passou no classroom, que é utilizada para garantir que o jogo gerado seja solucionável. O número de inversões é contado, e o jogo é considerado solucionável se o número de inversões for par.
+/* Implementamos também a função de verificar a paridade do jogo mencionada no vídeo que o prof. Emílio passou no classroom, que é utilizada para garantir que o jogo gerado seja solucionável. O número de inversões é contado, e o jogo é considerado solucionável se o número de inversões for par.
+*/
+
 bool verificaParidade(game* G){
     int inversoes = 0;
     int v[9];
