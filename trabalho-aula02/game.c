@@ -107,24 +107,39 @@ void copyGame(game* G, game* target){
         }
 }
 
-bool moveGame(game* G, int num){
+bool moveGame(game* G, int num) {
+    // zie e zjc são coordenadas do espaço vazio
+    // ni e nj são coordenadas do número que queremos mover
     int zi, zj, ni, nj;
 
-    for (int i=0; i<3; i++) {
-        for (int j=0; j<3; j++) {
-            if (G->grid[i][j] == 0) { zi = i; zj = j; }
-            if (G->grid[i][j] == num) { ni = i; nj = j; }
+    // Procura as posições do vazio (0) e da peça escolhida (num) na grade 3x3
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            // Encontrou o espaço vazio? Save na linha e coluna
+            if (G->grid[i][j] == 0) { 
+                zi = i; 
+                zj = j; 
+            }
+            // Encontrou a peça com o valor 'num'? Save na linha e coluna
+            if (G->grid[i][j] == num) { 
+                ni = i; 
+                nj = j; 
+            }
         }
     }
 
+    // Verifica quantos "passos" a peça está do buraco (apenas horizontal e vertical)
     int dist = abs(zi - ni) + abs(zj - nj);
 
+    // Se a distância for 1, significa que a peça está imediatamente ao lado, acima ou abaixo do vazio
     if (dist == 1) {
-        G->grid[zi][zj] = num;
-        G->grid[ni][nj] = 0;
-        return true;
+        // Swap
+        G->grid[zi][zj] = num; 
+        G->grid[ni][nj] = 0;   
+        return true;           
     }
     
+    // Se a distância não for 1 (peça longe ou na diagonal), o movimento é inválido
     return false;
 }
 
