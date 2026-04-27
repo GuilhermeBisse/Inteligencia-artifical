@@ -1,0 +1,37 @@
+MÉDIAS
+                Tempo(s)  Passos
+Algoritmo_fmt                   
+A* hfora       49.509910   22.35
+A* hm           0.536295   22.55
+Bidirecional    0.095377   11.45
+DFS             0.054784   19.40
+IDA* hfora      0.143528   22.35
+IDA* hm         0.004271   22.35
+IDDFS           3.520386   22.35
+IDS             0.229551   19.40
+
+DESVIO PADRÃO
+                 Tempo(s)    Passos
+Algoritmo_fmt                      
+A* hfora       132.235326  2.518876
+A* hm            1.590956  2.480980
+Bidirecional     0.117636  1.145931
+DFS              0.041393  0.547723
+IDA* hfora       0.233838  2.518876
+IDA* hm          0.005349  2.518876
+IDDFS            5.868294  2.518876
+IDS              0.051088  0.547723
+
+FALHAS
+Algoritmo
+A*               0
+Bidirecional     0
+DFS             15
+IDA*             0
+IDDFS            0
+IDS             15
+
+CONCLUSÕES
+Mais rápido: IDA* hm
+Melhor caminho: Bidirecional
+Mais falhas: DFS

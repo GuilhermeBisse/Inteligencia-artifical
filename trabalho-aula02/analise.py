@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-PASTA_GRAFICOS = "graficos"
+PASTA_GRAFICOS = "graficos-analise"
 
 if not os.path.exists(PASTA_GRAFICOS):
     os.makedirs(PASTA_GRAFICOS)
@@ -18,16 +18,37 @@ print("Total:", len(df))
 print("Sucessos:", len(df_sucesso))
 print("Falhas:", len(df_falha))
 
+df_sucesso["Algoritmo_fmt"] = df_sucesso["Algoritmo"]
 
-media = df_sucesso.groupby("Algoritmo")[["Tempo(s)", "Passos"]].mean()
-desvio = df_sucesso.groupby("Algoritmo")[["Tempo(s)", "Passos"]].std()
+df_sucesso.loc[
+    (df_sucesso["Algoritmo"] == "A*") & (df_sucesso["Heuristica"] == "Manhattan"),
+    "Algoritmo_fmt"
+] = "A* hm"
+
+df_sucesso.loc[
+    (df_sucesso["Algoritmo"] == "A*") & (df_sucesso["Heuristica"] == "ForaLugar"),
+    "Algoritmo_fmt"
+] = "A* hfora"
+
+df_sucesso.loc[
+    (df_sucesso["Algoritmo"] == "IDA*") & (df_sucesso["Heuristica"] == "Manhattan"),
+    "Algoritmo_fmt"
+] = "IDA* hm"
+
+df_sucesso.loc[
+    (df_sucesso["Algoritmo"] == "IDA*") & (df_sucesso["Heuristica"] == "ForaLugar"),
+    "Algoritmo_fmt"
+] = "IDA* hfora"
+
+media = df_sucesso.groupby("Algoritmo_fmt")[["Tempo(s)", "Passos"]].mean()
+desvio = df_sucesso.groupby("Algoritmo_fmt")[["Tempo(s)", "Passos"]].std()
 
 print("\nMÉDIAS\n", media)
 print("\nDESVIO PADRÃO\n", desvio)
 
 plt.figure()
-for alg in df_sucesso["Algoritmo"].unique():
-    sub = df_sucesso[df_sucesso["Algoritmo"] == alg]
+for alg in df_sucesso["Algoritmo_fmt"].unique():
+    sub = df_sucesso[df_sucesso["Algoritmo_fmt"] == alg]
     plt.scatter(sub["Passos"], sub["Tempo(s)"], label=alg)
 
 plt.yscale("log")
@@ -36,8 +57,6 @@ plt.ylabel("Tempo (s)")
 plt.legend()
 plt.tight_layout()
 plt.savefig(f"{PASTA_GRAFICOS}/tempo_vs_passos.png")
-
-
 
 plt.figure()
 media["Tempo(s)"].plot(kind="bar")
@@ -56,7 +75,7 @@ plt.tight_layout()
 plt.savefig(f"{PASTA_GRAFICOS}/passos_medios.png")
 
 plt.figure()
-df_sucesso.boxplot(column="Tempo(s)", by="Algoritmo")
+df_sucesso.boxplot(column="Tempo(s)", by="Algoritmo_fmt")
 plt.yscale("log")
 plt.title("Distribuição do Tempo (log)")
 plt.suptitle("")
