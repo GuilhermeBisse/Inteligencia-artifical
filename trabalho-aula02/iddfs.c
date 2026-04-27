@@ -7,7 +7,7 @@
 // Contadores globais que usamos para medir quantos nós foram expandidos durante a busca.
 // g_nodes_expanded conta os nós da iteração atual, e g_total_nodes acumula o total de todas as iterações.
 long g_nodes_expanded = 0;
-long g_total_nodes    = 0;
+long g_total_nodes = 0;
 
 // Implementação de uma pilha simples que usamos internamente no IDDFS.
 // Cada item guarda um nó da árvore e um ponteiro para o próximo item da pilha.
@@ -61,7 +61,7 @@ void pushPath(PathSet* ps, game* state) {
     it->state = newGame();
     copyGame(state, it->state);
     it->next = ps->top;
-    ps->top  = it;
+    ps->top = it;
 }
 
 void popPath(PathSet* ps) {
@@ -164,6 +164,6 @@ node IDDFS(game* G, int maxDepth) {
 // Reseta os contadores antes de cada chamada e usa MAX_DEPTH_IDDFS como limite de profundidade.
 node IDDFSSearch(game* G) {
     g_nodes_expanded = 0;
-    g_total_nodes    = 0;
+    g_total_nodes = 0;
     return IDDFS(G, MAX_DEPTH_IDDFS);
 }
