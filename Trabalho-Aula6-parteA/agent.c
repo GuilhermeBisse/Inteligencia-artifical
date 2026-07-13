@@ -1,4 +1,4 @@
-// Trabalho desenvolvido pelos alunos Felipe Matsuo, Guilherme Bisse, Gustavo Abelio e Pedro Ito
+// Trabalho desenvolvido pelos alunos Felipe Tatsuyuki Matsuo, Guilherme Bisse Alves Rodrigues, Gustavo Henrique Abelio Pinheiro e Pedro Henrique Ito Rocha
 
 // Esse arquivo implementa o agente que explora o grid em busca do ouro. Ele começa em (0,0), se move célula a célula pelas vizinhas, sente cheiro/vento
 // como dica de perigos próximos (monstro/buraco) e ganha ou perde pontos (score).
